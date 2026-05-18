@@ -1,10 +1,10 @@
 lidar:
   - driver:
       use_gpu: false
-      source_type: 1                                  # The type of data source, 1: real-time lidar connection, 2: pcap, 3: packet rosbag, 4: serial    
+      source_type: 1                                  # The type of data source, 1: real-time lidar connection, 2: pcap, 3: packet rosbag, 4: serial
       # Depending on the type of source_type, fill in the corresponding configuration block (lidar_udp_type, pcap_type, serial_type)
       lidar_udp_type:
-        device_ip_address: 192.168.1.201              # host_ip_address. If empty(""), the source ip of the udp point cloud is used
+        device_ip_address: 192.168.124.20              # host_ip_address. If empty(""), the source ip of the udp point cloud is used
         udp_port: 2368                                # UDP destination port
         ptc_port: 9347                                # PTC port of lidar
         multicast_ip_address: 255.255.255.255
@@ -25,8 +25,8 @@ lidar:
         ptc_mode: 0                                   # The ptc mode: [0] tcp [1] tcp_ssl
         # tcp_ssl use
         certFile: ""                                  # Represents the path of the user's certificate
-        privateKeyFile: ""                            # Represents the path of the user's private key 
-        caFile: ""                                    # Represents the path of the CA certificate 
+        privateKeyFile: ""                            # Represents the path of the user's private key
+        caFile: ""                                    # Represents the path of the CA certificate
 
       pcap_type:
         pcap_path: "Your pcap file"                         # The path of pcap file
@@ -35,8 +35,8 @@ lidar:
 
         pcap_play_synchronization: true                     # pcap play rate synchronize with the host time
         pcap_play_in_loop: false
-        play_rate_: 1.0                                     # pcap play rate 
-      
+        play_rate_: 1.0                                     # pcap play rate
+
       rosbag_type:
         correction_file_path: "Your correction file path"   # The path of correction file
         firetimes_path: "Your firetime file path"           # The path of firetimes file
@@ -47,10 +47,10 @@ lidar:
         point_cloud_baudrate: 3125000
         correction_save_path: ""                                      # turn on when you need to store angle calibration files(from lidar)
         correction_file_path: "Your correction file path"             # The path of correction file
-      
+
       # public module
       use_timestamp_type: 0                 # 0 use point cloud timestamp; 1 use receive timestamp
-      frame_start_azimuth: 0                # Frame azimuth for Pandar128, range from 1 to 359, set it less than 0 if you do not want to use it      
+      frame_start_azimuth: 0                # Frame azimuth for Pandar128, range from 1 to 359, set it less than 0 if you do not want to use it
       # parser thread num
       thread_num: 4
       # transform param
@@ -68,7 +68,7 @@ lidar:
       multi_fov_filter_ranges: "" # compare to channel_fov_filter_path, multi_fov_filter_ranges for all channels. example config "[20,30];[40,200]"
       # other config
       enable_packet_loss_tool: true         # enable the udp packet loss detection tool
-      distance_correction_flag: false       # set to true when optical centre correction needs to be turned on
+      distance_correction_flag: true       # set to true when optical centre correction needs to be turned on
       xt_spot_correction: false             # Set to TRUE when XT S point cloud layering correction is required
       device_udp_src_port: 0                # Filter point clouds for specified source ports in case of multiple lidar, setting >=1024
       device_fault_port: 0                  # Filter fault message for specified source ports in case of multiple lidar, setting >=1024
@@ -87,6 +87,6 @@ lidar:
       # ros_send_correction_topic: /lidar_corrections     # Topic used to send correction through ROS
       # ros_send_ptp_topic: /lidar_ptp                    # Topic used to send PTP lock status, offset through ROS
       # ros_send_every_packet_topic: /lidar_every_packet  # Topic used to send every packet through ROS
-      send_packet_ros: false                              # true: Send packets through ROS 
-      send_point_cloud_ros: true                          # true: Send point cloud through ROS    
-      send_imu_ros: true                                  # true: Send imu through ROS    
+      send_packet_ros: false                              # true: Send packets through ROS
+      send_point_cloud_ros: true                          # true: Send point cloud through ROS
+      send_imu_ros: true                                  # true: Send imu through ROS
