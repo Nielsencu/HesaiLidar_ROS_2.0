@@ -3,11 +3,17 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 
 def generate_launch_description():
     description_dir = get_package_share_directory('hesai_ros_driver')
+
+    cfg_file_arg = DeclareLaunchArgument(
+        'config_file',
+        default_value='config_both.yaml',
+        description='Filename of config file in config/'
+    )
 
     rviz_arg = DeclareLaunchArgument(
         'rviz',
@@ -15,8 +21,8 @@ def generate_launch_description():
         description='Launch RViz2 visualisation'
     )
 
-    yaml_config = os.path.join(description_dir, 'config', 'config.yaml')
-    rviz_config = os.path.join(description_dir, 'rviz', 'rviz2.rviz')
+    yaml_config = PathJoinSubstitution([description_dir, 'config', LaunchConfiguration('config_file')])
+    rviz_config = PathJoinSubstitution([description_dir, 'rviz', 'rviz2.rviz'])
 
     driver_node = Node(
         namespace='hesai_ros_driver',
@@ -36,6 +42,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        cfg_file_arg,
         rviz_arg,
         driver_node,
         rviz_node
