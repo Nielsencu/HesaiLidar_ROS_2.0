@@ -7,7 +7,7 @@ lidar:
         device_ip_address: 192.168.124.20              # host_ip_address. If empty(""), the source ip of the udp point cloud is used
         udp_port: 2368                                # UDP destination port
         ptc_port: 9347                                # PTC port of lidar
-        multicast_ip_address: 255.255.255.255
+        multicast_ip_address: 192.168.124.162         # Broadcast to machines
 
         use_ptc_connected: true                       # Set to false when ptc connection is not used
         host_ptc_port: 0                              # PTC source port, 0 means auto
@@ -28,25 +28,9 @@ lidar:
         privateKeyFile: ""                            # Represents the path of the user's private key
         caFile: ""                                    # Represents the path of the CA certificate
 
-      pcap_type:
-        pcap_path: "Your pcap file"                         # The path of pcap file
-        correction_file_path: "Your correction file path"   # The path of correction file
-        firetimes_path: "Your firetime file path"           # The path of firetimes file
-
-        pcap_play_synchronization: true                     # pcap play rate synchronize with the host time
-        pcap_play_in_loop: false
-        play_rate_: 1.0                                     # pcap play rate
-
       rosbag_type:
         correction_file_path: "Your correction file path"   # The path of correction file
         firetimes_path: "Your firetime file path"           # The path of firetimes file
-
-      serial_type:
-        rs485_com: "Your serial port name for receiving point cloud"  # if using JT16, Port to receive the point cloud
-        rs232_com: "Your serial port name for sending cmd"            # if using JT16, Port to send cmd
-        point_cloud_baudrate: 3125000
-        correction_save_path: ""                                      # turn on when you need to store angle calibration files(from lidar)
-        correction_file_path: "Your correction file path"             # The path of correction file
 
       # public module
       use_timestamp_type: 0                 # 0 use point cloud timestamp; 1 use receive timestamp
@@ -77,16 +61,16 @@ lidar:
       echo_mode_filter: 0                   # return mode filter
 
     ros:
-      ros_frame_id: hesai_lidar                           # Frame id of packet message and point cloud message
-      ros_recv_packet_topic: /lidar_packets               # Topic used to receive lidar packets from rosbag
-      ros_send_packet_topic: /lidar_packets               # Topic used to send lidar raw packets through ROS
-      ros_send_point_cloud_topic: /lidar_points           # Topic used to send point cloud through ROS
-      ros_send_imu_topic: /lidar_imu                      # Topic used to send lidar imu message
-      ros_send_packet_loss_topic: /lidar_packets_loss     # Topic used to monitor packets loss condition through ROS
-      # ros_recv_correction_topic: /lidar_corrections     # Topic used to receive corrections file from rosbag
-      # ros_send_correction_topic: /lidar_corrections     # Topic used to send correction through ROS
-      # ros_send_ptp_topic: /lidar_ptp                    # Topic used to send PTP lock status, offset through ROS
-      # ros_send_every_packet_topic: /lidar_every_packet  # Topic used to send every packet through ROS
+      ros_frame_id: front_lidar                       # Frame id of packet message and point cloud message
+      ros_recv_packet_topic: /front_lidar/packets           # Topic used to receive lidar packets from rosbag
+      ros_send_packet_topic: /front_lidar/packets           # Topic used to send lidar raw packets through ROS
+      ros_send_point_cloud_topic: /front_lidar/points       # Topic used to send point cloud through ROS
+      ros_send_imu_topic: /front_lidar/imu                  # Topic used to send lidar imu message
+      ros_send_packet_loss_topic: /front_lidar/packets_loss # Topic used to monitor packets loss condition through ROS
+      # ros_recv_correction_topic: /front_lidar/corrections     # Topic used to receive corrections file from rosbag
+      # ros_send_correction_topic: /front_lidar/corrections     # Topic used to send correction through ROS
+      # ros_send_ptp_topic: /front_lidar/ptp                    # Topic used to send PTP lock status, offset through ROS
+      # ros_send_every_packet_topic: /front_lidar/every_packet  # Topic used to send every packet through ROS
       send_packet_ros: false                              # true: Send packets through ROS
       send_point_cloud_ros: true                          # true: Send point cloud through ROS
       send_imu_ros: true                                  # true: Send imu through ROS
