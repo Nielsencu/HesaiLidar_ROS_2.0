@@ -11,7 +11,7 @@ def generate_launch_description():
 
     cfg_file_arg = DeclareLaunchArgument(
         'config_file',
-        default_value='config_both.yaml',
+        default_value='config_front.yaml',
         description='Filename of config file in config/'
     )
 

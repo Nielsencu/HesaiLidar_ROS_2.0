@@ -104,6 +104,8 @@ protected:
   // Convert Angular Velocity from degree/s to radian/s
   // double From_degs_To_rads(double degree);
   std::string frame_id_;
+  // Radial min-distance filter (meters); 0 disables. Removes chassis returns.
+  float min_distance_ = 0.0f;
 
   rclcpp::Subscription<std_msgs::msg::UInt8MultiArray>::SharedPtr crt_sub_;
   rclcpp::Subscription<hesai_ros_driver::msg::UdpFrame>::SharedPtr pkt_sub_;
@@ -125,6 +127,7 @@ inline void SourceDriver::Init(const YAML::Node& config)
   DriveYamlParam yaml_param;
   yaml_param.GetDriveYamlParam(config, driver_param);
   frame_id_ = driver_param.input_param.frame_id;
+  min_distance_ = driver_param.decoder_param.min_distance;
 
   node_ptr_.reset(new rclcpp::Node("hesai_ros_driver_node"));
   if (driver_param.input_param.send_point_cloud_ros) {
@@ -289,9 +292,18 @@ inline sensor_msgs::msg::PointCloud2 SourceDriver::ToRosMsg(const LidarDecodedFr
   sensor_msgs::PointCloud2Iterator<float> iter_intensity_(ros_msg, "intensity");
   sensor_msgs::PointCloud2Iterator<uint16_t> iter_ring_(ros_msg, "ring");
   sensor_msgs::PointCloud2Iterator<double> iter_timestamp_(ros_msg, "timestamp");
+  // Radial min-distance filter: drop points within min_distance_ of the sensor
+  // origin (e.g. robot chassis). kept points are written to the front of the
+  // buffer and the message is shrunk to match below. 0 disables the filter.
+  const float min_r2 = min_distance_ * min_distance_;
+  size_t kept = 0;
   for (size_t i = 0; i < points_number; i++)
   {
     LidarPointXYZIRT point = pPoints[i];
+    if (min_r2 > 0.f &&
+        (point.x * point.x + point.y * point.y + point.z * point.z) < min_r2) {
+      continue;
+    }
     *iter_x_ = point.x;
     *iter_y_ = point.y;
     *iter_z_ = point.z;
@@ -303,7 +315,16 @@ inline sensor_msgs::msg::PointCloud2 SourceDriver::ToRosMsg(const LidarDecodedFr
     ++iter_z_;
     ++iter_intensity_;
     ++iter_ring_;
-    ++iter_timestamp_;   
+    ++iter_timestamp_;
+    ++kept;
+  }
+  // Shrink the message to the points actually kept (buffer was pre-sized to
+  // points_number). Skipping this would leave uninitialized tail points.
+  if (kept != points_number) {
+    points_number = kept;
+    ros_msg.width = kept;
+    ros_msg.row_step = kept * ros_msg.point_step;
+    ros_msg.data.resize(kept * ros_msg.point_step);
   }
   // printf("HesaiLidar Runing Status [standby mode:%u]  |  [speed:%u]\n", frame.work_mode, frame.spin_speed);
   printf("%s frame:%d points:%u packet:%d start time:%lf end time:%lf\n", prefix, frame_index, points_number, packet_number, frame_start_timestamp, frame_end_timestamp) ;

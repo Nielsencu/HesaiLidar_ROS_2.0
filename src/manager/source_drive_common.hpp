@@ -71,6 +71,7 @@ public:
         YamlRead<float>(      driver_config, "yaw",                       driver_param.decoder_param.transform_param.yaw, 0);
         YamlRead<int>(        driver_config, "fov_start",                 driver_param.decoder_param.fov_start, -1);
         YamlRead<int>(        driver_config, "fov_end",                   driver_param.decoder_param.fov_end, -1);
+        YamlRead<float>(      driver_config, "min_distance",              driver_param.decoder_param.min_distance, 0.0);
         YamlRead<bool>(       driver_config, "enable_packet_loss_tool",   driver_param.decoder_param.enable_packet_loss_tool, false);
         YamlRead<bool>(       driver_config, "distance_correction_flag",  driver_param.decoder_param.distance_correction_flag, false);
         YamlRead<bool>(       driver_config, "xt_spot_correction",        driver_param.decoder_param.xt_spot_correction, false);

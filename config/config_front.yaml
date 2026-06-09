@@ -38,7 +38,7 @@ lidar:
       # parser thread num
       thread_num: 4
       # transform param
-      transform_flag: false
+      transform_flag: true
       x: 0
       y: 0
       z: 0
@@ -48,6 +48,10 @@ lidar:
       # fov config, [fov_start, fov_end] range [1, 359], [-1, -1]means use default
       fov_start: -1
       fov_end:  -1
+      # Drop points within this radius (meters) of the sensor origin, e.g. robot
+      # chassis returns. 0 disables the filter. Applies to the published cloud,
+      # so both DLIO and RViz see the filtered points.
+      min_distance: 0.5
       channel_fov_filter_path: "Your channel fov filter file path"  # The path of channel_fov_filter file, like channel 0 filter [10, 20] and [30,40]
       multi_fov_filter_ranges: "" # compare to channel_fov_filter_path, multi_fov_filter_ranges for all channels. example config "[20,30];[40,200]"
       # other config
