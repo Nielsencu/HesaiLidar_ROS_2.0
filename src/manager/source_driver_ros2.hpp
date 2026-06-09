@@ -100,9 +100,9 @@ protected:
   // Convert imu, imu into ROS message
   sensor_msgs::msg::Imu ToRosMsg(const LidarImuData& firetime_correction_);
   // Convert Linear Acceleration from g to m/s^2
-  // double From_g_To_ms2(double g);
+  double From_g_To_ms2(double g);
   // Convert Angular Velocity from degree/s to radian/s
-  // double From_degs_To_rads(double degree);
+  double From_degs_To_rads(double degree);
   std::string frame_id_;
 
   rclcpp::Subscription<std_msgs::msg::UInt8MultiArray>::SharedPtr crt_sub_;
@@ -391,12 +391,12 @@ inline sensor_msgs::msg::Imu SourceDriver::ToRosMsg(const LidarImuData &imu_conf
     printf("does not support timestamps greater than 19 January 2038 03:14:07 (now %lf)\n", imu_config_.timestamp);
   }
   ros_msg.header.frame_id = frame_id_;
-  ros_msg.linear_acceleration.x = (imu_config_.imu_accel_x);
-  ros_msg.linear_acceleration.y = (imu_config_.imu_accel_y);
-  ros_msg.linear_acceleration.z = (imu_config_.imu_accel_z);
-  ros_msg.angular_velocity.x = (imu_config_.imu_ang_vel_x);
-  ros_msg.angular_velocity.y = (imu_config_.imu_ang_vel_y);
-  ros_msg.angular_velocity.z = (imu_config_.imu_ang_vel_z);
+  ros_msg.linear_acceleration.x = From_g_To_ms2(imu_config_.imu_accel_x);
+  ros_msg.linear_acceleration.y = From_g_To_ms2(imu_config_.imu_accel_y);
+  ros_msg.linear_acceleration.z = From_g_To_ms2(imu_config_.imu_accel_z);
+  ros_msg.angular_velocity.x = From_degs_To_rads(imu_config_.imu_ang_vel_x);
+  ros_msg.angular_velocity.y = From_degs_To_rads(imu_config_.imu_ang_vel_y);
+  ros_msg.angular_velocity.z = From_degs_To_rads(imu_config_.imu_ang_vel_z);
   return ros_msg;
 }
 
@@ -419,12 +419,12 @@ inline void SourceDriver::ReceiveCorrection(const std_msgs::msg::UInt8MultiArray
   }
 }
 
-// inline double SourceDriver::From_g_To_ms2(double g)
-// {
-//   return g * 9.80665;
-// }
+inline double SourceDriver::From_g_To_ms2(double g)
+{
+  return g * 9.80665;
+}
 
-// inline double SourceDriver::From_degs_To_rads(double degree)
-// {
-//   return degree * M_PI / 180.0;
-// }
+inline double SourceDriver::From_degs_To_rads(double degree)
+{
+  return degree * M_PI / 180.0;
+}
