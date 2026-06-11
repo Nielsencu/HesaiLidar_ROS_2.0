@@ -61,7 +61,8 @@ lidar:
       echo_mode_filter: 0                   # return mode filter
 
     ros:
-      ros_frame_id: rear_lidar_link                       # Frame id of packet message and point cloud message
+      ros_lidar_frame_id: rear_lidar_link                 # Frame id of packet message and point cloud message
+      ros_imu_frame_id: rear_imu_link                     # Frame id of the imu message
       ros_recv_packet_topic: /back_lidar/packets           # Topic used to receive lidar packets from rosbag
       ros_send_packet_topic: /back_lidar/packets           # Topic used to send lidar raw packets through ROS
       ros_send_point_cloud_topic: /back_lidar/points       # Topic used to send point cloud through ROS

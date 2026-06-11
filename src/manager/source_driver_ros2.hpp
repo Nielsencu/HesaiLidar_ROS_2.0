@@ -104,6 +104,8 @@ protected:
   // Convert Angular Velocity from degree/s to radian/s
   double From_degs_To_rads(double degree);
   std::string frame_id_;
+  // Frame id for the IMU message; defaults to frame_id_ when ros_imu_frame_id is unset.
+  std::string imu_frame_id_;
   // Radial min-distance filter (meters); 0 disables. Removes chassis returns.
   float min_distance_ = 0.0f;
 
@@ -127,6 +129,8 @@ inline void SourceDriver::Init(const YAML::Node& config)
   DriveYamlParam yaml_param;
   yaml_param.GetDriveYamlParam(config, driver_param);
   frame_id_ = driver_param.input_param.frame_id;
+  // IMU frame defaults to the lidar frame unless ros_imu_frame_id is set in config.
+  YamlRead<std::string>(config["ros"], "ros_imu_frame_id", imu_frame_id_, frame_id_);
   min_distance_ = driver_param.decoder_param.min_distance;
 
   node_ptr_.reset(new rclcpp::Node("hesai_ros_driver_node"));
@@ -320,12 +324,6 @@ inline sensor_msgs::msg::PointCloud2 SourceDriver::ToRosMsg(const LidarDecodedFr
   }
   // Shrink the message to the points actually kept (buffer was pre-sized to
   // points_number). Skipping this would leave uninitialized tail points.
-  if (kept != points_number) {
-    points_number = kept;
-    ros_msg.width = kept;
-    ros_msg.row_step = kept * ros_msg.point_step;
-    ros_msg.data.resize(kept * ros_msg.point_step);
-  }
   // printf("HesaiLidar Runing Status [standby mode:%u]  |  [speed:%u]\n", frame.work_mode, frame.spin_speed);
   printf("%s frame:%d points:%u packet:%d start time:%lf end time:%lf\n", prefix, frame_index, points_number, packet_number, frame_start_timestamp, frame_end_timestamp) ;
   std::cout.flush();
@@ -411,7 +409,7 @@ inline sensor_msgs::msg::Imu SourceDriver::ToRosMsg(const LidarImuData &imu_conf
   } else {
     printf("does not support timestamps greater than 19 January 2038 03:14:07 (now %lf)\n", imu_config_.timestamp);
   }
-  ros_msg.header.frame_id = frame_id_;
+  ros_msg.header.frame_id = imu_frame_id_;
   ros_msg.linear_acceleration.x = From_g_To_ms2(imu_config_.imu_accel_x);
   ros_msg.linear_acceleration.y = From_g_To_ms2(imu_config_.imu_accel_y);
   ros_msg.linear_acceleration.z = From_g_To_ms2(imu_config_.imu_accel_z);

@@ -203,7 +203,8 @@ lidar:
       echo_mode_filter: 0                   # return mode filter
 
     ros:
-      ros_frame_id: hesai_lidar                       # Frame id of packet message and point cloud message
+      ros_lidar_frame_id: hesai_lidar                 # Frame id of packet message and point cloud message
+      ros_imu_frame_id: hesai_imu                     # Frame id of the imu message (defaults to ros_lidar_frame_id if unset)
       ros_recv_packet_topic: /lidar_packets           # Topic used to receive lidar packets from rosbag
       ros_send_packet_topic: /lidar_packets           # Topic used to send lidar raw packets through ROS
       ros_send_point_cloud_topic: /lidar_points       # Topic used to send point cloud through ROS
@@ -327,7 +328,8 @@ lidar:
       echo_mode_filter: 0                   # return mode filter
 
     ros:
-      ros_frame_id: hesai_lidar                       # Frame id of packet message and point cloud message
+      ros_lidar_frame_id: hesai_lidar                 # Frame id of packet message and point cloud message
+      ros_imu_frame_id: hesai_imu                     # Frame id of the imu message (defaults to ros_lidar_frame_id if unset)
       ros_recv_packet_topic: /lidar_packets           # Topic used to receive lidar packets from rosbag
       ros_send_packet_topic: /lidar_packets           # Topic used to send lidar raw packets through ROS
       ros_send_point_cloud_topic: /lidar_points       # Topic used to send point cloud through ROS
@@ -414,7 +416,8 @@ lidar:
       echo_mode_filter: 0                   # return mode filter
 
     ros:
-      ros_frame_id: hesai_lidar                       # Frame id of packet message and point cloud message
+      ros_lidar_frame_id: hesai_lidar                 # Frame id of packet message and point cloud message
+      ros_imu_frame_id: hesai_imu                     # Frame id of the imu message (defaults to ros_lidar_frame_id if unset)
       ros_recv_packet_topic: /lidar_packets_2           # Topic used to receive lidar packets from rosbag
       ros_send_packet_topic: /lidar_packets_2           # Topic used to send lidar raw packets through ROS
       ros_send_point_cloud_topic: /lidar_points_2       # Topic used to send point cloud through ROS
